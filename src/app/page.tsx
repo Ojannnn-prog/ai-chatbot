@@ -1,12 +1,134 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import ChatInput from '@/components/ChatInput';
-import MessageBubble from '@/components/MessageBubble';
-import Sidebar from '@/components/Sidebar';
-import { Conversation, Message } from '@/types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-/* ── helpers ─────────────────────────────────────────────── */
+/* ── Types ───────────────────────────────────────────────── */
+export type Role = 'user' | 'assistant' | 'system';
+
+export interface Message {
+  id: string;
+  role: Role;
+  content: string;
+  timestamp: Date;
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/* ── Inline Components (Untuk Preview) ───────────────────── */
+
+const Sidebar = ({ conversations, activeId, onSelect, onNew, onDelete }: any) => (
+  <div className="w-64 bg-[#171717] flex flex-col h-full border-r border-[#2a2a2a] shrink-0">
+    <div className="p-3">
+      <button
+        onClick={onNew}
+        className="w-full flex items-center gap-2 px-3 py-2 bg-[#212121] hover:bg-[#2a2a2a] text-white rounded-lg transition-colors border border-[#333]"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        New Chat
+      </button>
+    </div>
+    <div className="flex-1 overflow-y-auto p-2 space-y-1">
+      {conversations.map((c: any) => (
+        <div
+          key={c.id}
+          className={`group flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors ${activeId === c.id ? 'bg-[#2a2a2a] text-white' : 'text-[#8e8ea0] hover:bg-[#212121]'
+            }`}
+          onClick={() => onSelect(c.id)}
+        >
+          <span className="truncate text-sm">{c.title}</span>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete(c.id); }}
+            className="hidden group-hover:block text-[#8e8ea0] hover:text-red-400"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const ChatInput = ({ onSend, isStreaming, disabled }: any) => {
+  const [input, setInput] = useState('');
+  const handleSend = () => {
+    if (!input.trim() || disabled) return;
+    onSend(input);
+    setInput('');
+  };
+
+  return (
+    <div className="p-4 bg-[#212121]">
+      <div className="max-w-3xl mx-auto relative flex items-center">
+        <textarea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
+          placeholder="Send a message..."
+          className="w-full bg-[#2a2a2a] text-white border border-[#3a3a3a] rounded-xl pl-4 pr-12 py-3 focus:outline-none focus:border-[#10a37f]/50 resize-none overflow-hidden h-[52px] max-h-[200px]"
+          rows={1}
+        />
+        <button
+          onClick={handleSend}
+          disabled={!input.trim() || disabled || isStreaming}
+          className="absolute right-2 bottom-1.5 p-2 bg-[#10a37f] text-white rounded-lg disabled:opacity-50 disabled:bg-[#333] transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
+        </button>
+      </div>
+      <div className="text-center text-[#8e8ea0] text-xs mt-3">
+        AI can make mistakes. Check important info.
+      </div>
+    </div>
+  );
+};
+
+const MessageBubble = ({ message, isStreaming }: any) => {
+  const isUser = message.role === 'user';
+  return (
+    <div className={`py-6 px-4 ${isUser ? '' : 'bg-[#171717]'}`}>
+      <div className="max-w-3xl mx-auto flex gap-4">
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isUser ? 'bg-[#333]' : 'bg-[#10a37f]'}`}>
+          {isUser ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+            </svg>
+          )}
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className="text-white text-[15px] whitespace-pre-wrap mt-1 leading-relaxed">
+            {message.content}
+            {isStreaming && <span className="inline-block w-2 h-4 bg-[#10a37f] ml-1 animate-pulse align-middle" />}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── Helpers ─────────────────────────────────────────────── */
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
@@ -28,18 +150,42 @@ const WELCOME_PROMPTS = [
   'How does the internet actually work?',
 ];
 
-/* ── component ───────────────────────────────────────────── */
-export default function Home() {
+/* ── Main App Component ──────────────────────────────────── */
+export default function App() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const activeConversation = conversations.find((c) => c.id === activeId) ?? null;
   const messages = activeConversation?.messages ?? [];
+
+  /* ── fitur memori (localStorage) ───────────────────────── */
+  useEffect(() => {
+    const savedData = localStorage.getItem('ai-chatbot-memory');
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        if (parsedData && parsedData.length > 0) {
+          setConversations(parsedData);
+          setActiveId(parsedData[0].id);
+        }
+      } catch (error) {
+        console.error('Gagal memuat memori:', error);
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('ai-chatbot-memory', JSON.stringify(conversations));
+    }
+  }, [conversations, isLoaded]);
 
   /* scroll to bottom on new messages */
   useEffect(() => {
@@ -56,16 +202,20 @@ export default function Home() {
   const deleteConversation = useCallback(
     (id: string) => {
       setConversations((prev) => prev.filter((c) => c.id !== id));
-      if (activeId === id) setActiveId(null);
+      if (activeId === id) {
+        setConversations((prev) => {
+          if (prev.length > 0) setActiveId(prev[0].id);
+          else setActiveId(null);
+          return prev;
+        });
+      }
     },
     [activeId]
   );
 
-
   /* ── send message ──────────────────────────────────────── */
   const sendMessage = useCallback(
     async (text: string) => {
-      /* ensure there's an active conversation */
       let convId = activeId;
       if (!convId) {
         const conv = makeConversation();
@@ -88,7 +238,6 @@ export default function Home() {
         timestamp: new Date(),
       };
 
-      /* add user message + empty assistant placeholder */
       setConversations((prev) =>
         prev.map((c) => {
           if (c.id !== convId) return c;
@@ -96,7 +245,6 @@ export default function Home() {
             ...c,
             messages: [...c.messages, userMsg, assistantMsg],
             updatedAt: new Date(),
-            /* set title from first message */
             title:
               c.messages.length === 0
                 ? text.slice(0, 48) + (text.length > 48 ? '…' : '')
@@ -110,7 +258,6 @@ export default function Home() {
       abortRef.current = new AbortController();
 
       try {
-        /* build history to send (exclude the empty assistant placeholder) */
         const historyMessages = [
           ...(conversations.find((c) => c.id === convId)?.messages ?? []),
           userMsg,
@@ -123,15 +270,12 @@ export default function Home() {
           signal: abortRef.current.signal,
         });
 
-        // Non-OK responses carry a JSON body with a friendly error message
         if (!res.ok || !res.body) {
           let errMsg = `Request failed (${res.status})`;
           try {
             const data = await res.json();
             if (data?.error) errMsg = data.error;
-          } catch {
-            // body wasn't JSON — use default message
-          }
+          } catch { }
           throw new Error(errMsg);
         }
 
@@ -144,7 +288,6 @@ export default function Home() {
           if (done) break;
           accumulated += decoder.decode(value, { stream: true });
 
-          /* update assistant message content in real-time */
           const snapshot = accumulated;
           setConversations((prev) =>
             prev.map((c) => {
@@ -160,7 +303,7 @@ export default function Home() {
         }
       } catch (err: unknown) {
         if (err instanceof Error && err.name === 'AbortError') return;
-        const errMsg = err instanceof Error ? err.message : 'An unknown error occurred.';
+        const errMsg = err instanceof Error ? err.message : 'An error occurred (Since this is a preview, the /api/chat route is not available here).';
         setConversations((prev) =>
           prev.map((c) => {
             if (c.id !== convId) return c;
@@ -183,8 +326,10 @@ export default function Home() {
   );
 
   /* ── render ───────────────────────────────────────────── */
+  if (!isLoaded) return <div className="flex h-screen bg-[#212121]" />;
+
   return (
-    <div className="flex h-full bg-[#212121] text-[#ececec]">
+    <div className="flex h-screen w-full bg-[#212121] text-[#ececec] font-sans">
       {/* Sidebar */}
       {sidebarOpen && (
         <Sidebar
@@ -262,7 +407,7 @@ export default function Home() {
             </div>
           ) : (
             /* Message list */
-            <div className="max-w-3xl mx-auto py-4">
+            <div className="w-full pb-4">
               {messages.map((msg, idx) => (
                 <MessageBubble
                   key={msg.id}
