@@ -30,7 +30,7 @@ export default function Sidebar({
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
             </svg>
           </div>
-          <span className="font-semibold text-white text-sm tracking-tight">GeminiChat</span>
+          <span className="font-semibold text-white text-sm tracking-tight">Mari Tanya</span>
         </div>
 
         {/* New Chat Button */}
@@ -45,7 +45,7 @@ export default function Sidebar({
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
           </span>
-          New chat
+          Percakapan Baru
         </button>
       </div>
 
@@ -68,11 +68,10 @@ export default function Sidebar({
             >
               <button
                 onClick={() => onSelect(conv.id)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors duration-100 truncate pr-8 ${
-                  activeId === conv.id
-                    ? 'bg-[#2a2a2a] text-white'
-                    : 'text-[#c5c5d2] hover:bg-[#222222] hover:text-white'
-                }`}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors duration-100 truncate pr-8 ${activeId === conv.id
+                  ? 'bg-[#2a2a2a] text-white'
+                  : 'text-[#c5c5d2] hover:bg-[#222222] hover:text-white'
+                  }`}
               >
                 <span className="block truncate">{conv.title}</span>
               </button>
