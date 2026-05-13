@@ -14,7 +14,7 @@ function uid() {
 function makeConversation(): Conversation {
   return {
     id: uid(),
-    title: 'New conversation',
+    title: 'Percakapan Baru',
     messages: [],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -22,10 +22,11 @@ function makeConversation(): Conversation {
 }
 
 const WELCOME_PROMPTS = [
-  'Explain quantum computing in simple terms',
-  'Write a Python script to sort a list',
-  'What are the benefits of meditation?',
-  'How does the internet actually work?',
+  'Berapa suhu derajat saat ini?',
+  'Siapa presiden pertama indonesia?',
+  'Resep masakan padang : Rendang',
+  'Cara kerja AI ini gimana sih?',
+  'Ini AI bukan?',
 ];
 
 /* ── component ───────────────────────────────────────────── */
@@ -215,7 +216,7 @@ export default function Home() {
 
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-white">
-              {activeConversation?.title ?? 'GeminiChat'}
+              {activeConversation?.title ?? 'Mari Tanya'}
             </span>
             {isStreaming && (
               <span className="inline-flex items-center gap-1 text-[10px] text-[#10a37f] font-medium bg-[#10a37f]/10 px-2 py-0.5 rounded-full">
@@ -242,9 +243,9 @@ export default function Home() {
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">GeminiChat</h1>
+              <h1 className="text-2xl font-bold text-white mb-2">Mari Tanya</h1>
               <p className="text-[#8e8ea0] text-sm mb-8 text-center max-w-sm">
-                Powered by Google Gemini 2.0 Flash. Ask me anything — I&apos;m here to help.
+                Selamat datang, silahkan tanyakan apa saja ke saya.
               </p>
 
               {/* Prompt suggestions */}

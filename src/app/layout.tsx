@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GeminiChat — AI Assistant",
-  description: "A modern AI chatbot powered by Google Gemini. Ask anything, get intelligent answers instantly.",
+  title: "Mari Tanya | Sebuah Asisten pintar anda",
+  description: "Dibuat oleh Ojannnn AKA Zahtyar, dari bawaan GPT-OSS Free",
 };
 
 export default function RootLayout({
