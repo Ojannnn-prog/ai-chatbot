@@ -34,11 +34,10 @@ export default function ChatInput({ onSend, isStreaming, disabled }: ChatInputPr
     <div className="px-4 pb-4 pt-2">
       <div className="max-w-3xl mx-auto">
         <div
-          className={`relative flex items-end gap-2 rounded-2xl border transition-colors duration-200 bg-[#2f2f2f] ${
-            disabled
-              ? 'border-[#333] opacity-60'
-              : 'border-[#444] focus-within:border-[#10a37f]'
-          }`}
+          className={`relative flex items-end gap-2 rounded-2xl border transition-colors duration-200 bg-[#2f2f2f] ${disabled
+            ? 'border-[#333] opacity-60'
+            : 'border-[#444] focus-within:border-[#10a37f]'
+            }`}
         >
           <textarea
             ref={textareaRef}
@@ -48,7 +47,7 @@ export default function ChatInput({ onSend, isStreaming, disabled }: ChatInputPr
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={disabled || isStreaming}
-            placeholder={isStreaming ? 'GeminiChat is thinking…' : 'Message GeminiChat…'}
+            placeholder={isStreaming ? 'Mari tanya sedang berpikir...' : 'Kirim pesan...'}
             className="flex-1 resize-none bg-transparent text-[#ececec] placeholder:text-[#666] text-sm px-4 py-3.5 focus:outline-none max-h-48 overflow-y-auto leading-relaxed"
             style={{ minHeight: '52px' }}
           />
@@ -59,7 +58,7 @@ export default function ChatInput({ onSend, isStreaming, disabled }: ChatInputPr
               <button
                 id="stop-btn"
                 className="w-9 h-9 rounded-xl bg-[#404040] hover:bg-[#555] flex items-center justify-center transition-colors"
-                title="Stop generating"
+                title="Berhenti berpikir"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="#ececec">
                   <rect x="5" y="5" width="14" height="14" rx="2" />
@@ -70,12 +69,11 @@ export default function ChatInput({ onSend, isStreaming, disabled }: ChatInputPr
                 id="send-btn"
                 onClick={handleSubmit}
                 disabled={!canSend}
-                className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-150 ${
-                  canSend
-                    ? 'bg-[#10a37f] hover:bg-[#0d8a6b] shadow-lg shadow-[#10a37f]/20'
-                    : 'bg-[#3a3a3a] cursor-not-allowed'
-                }`}
-                title="Send message"
+                className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-150 ${canSend
+                  ? 'bg-[#10a37f] hover:bg-[#0d8a6b] shadow-lg shadow-[#10a37f]/20'
+                  : 'bg-[#3a3a3a] cursor-not-allowed'
+                  }`}
+                title="Kirim pesan"
               >
                 <svg
                   width="16" height="16" viewBox="0 0 24 24"
@@ -91,7 +89,7 @@ export default function ChatInput({ onSend, isStreaming, disabled }: ChatInputPr
         </div>
 
         <p className="text-center text-[10px] text-[#555] mt-2">
-          GeminiChat can make mistakes. Press <kbd className="px-1 rounded bg-[#333] text-[#888] font-mono">Enter</kbd> to send, <kbd className="px-1 rounded bg-[#333] text-[#888] font-mono">Shift+Enter</kbd> for new line.
+          Mari tanya bisa membuat kesalahan. Tekan <kbd className="px-1 rounded bg-[#333] text-[#888] font-mono">Enter</kbd> untuk mengirim, <kbd className="px-1 rounded bg-[#333] text-[#888] font-mono">Shift+Enter</kbd> untuk membuat baris baru.
         </p>
       </div>
     </div>

@@ -53,7 +53,7 @@ export default function Sidebar({
       <div className="flex-1 overflow-y-auto py-2 px-2 space-y-0.5">
         {conversations.length === 0 && (
           <p className="text-xs text-[#8e8ea0] text-center mt-8 px-4">
-            No conversations yet. Start a new chat!
+            Tidak ada percakapan. Mulai percakapan baru!
           </p>
         )}
         {conversations
@@ -83,7 +83,7 @@ export default function Sidebar({
                     onDelete(conv.id);
                   }}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded text-[#8e8ea0] hover:text-red-400 hover:bg-[#3a2a2a] transition-colors"
-                  title="Delete conversation"
+                  title="Hapus percakapan"
                 >
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="3 6 5 6 21 6" />
@@ -104,8 +104,8 @@ export default function Sidebar({
             U
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-[#ececec] font-medium truncate">User</p>
-            <p className="text-[10px] text-[#8e8ea0] truncate">gemini-2.0-flash</p>
+            <p className="text-xs text-[#ececec] font-medium truncate">Pengguna</p>
+            <p className="text-[10px] text-[#8e8ea0] truncate">Mari Tanya</p>
           </div>
         </div>
       </div>
