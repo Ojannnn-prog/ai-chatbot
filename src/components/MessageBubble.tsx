@@ -159,7 +159,7 @@ export default function MessageBubble({ message, isStreaming }: MessageBubblePro
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-[#10a37f] mb-1">GeminiChat</p>
+        <p className="text-xs font-semibold text-[#10a37f] mb-1">Mari Tanya</p>
         <div
           className={`prose-chat text-sm text-[#d1d5db] ${isStreaming ? 'cursor-blink' : ''}`}
           dangerouslySetInnerHTML={{ __html: htmlContent }}

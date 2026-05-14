@@ -228,7 +228,7 @@ export default function Home() {
 
           <div className="ml-auto flex items-center gap-2">
             <span className="hidden sm:inline text-[11px] text-[#555] bg-[#2a2a2a] px-2 py-1 rounded-full">
-              gemini-2.0-flash
+              Mari Tanya 1.0
             </span>
           </div>
         </header>
